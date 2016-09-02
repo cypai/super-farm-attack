@@ -19,7 +19,7 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "super-farm-attack"
+        appName = "sfa"
         gdxVersion = '1.9.4'
         commonsLangVersion = '3.0'
         jacksonVersion = '2.6.3'
