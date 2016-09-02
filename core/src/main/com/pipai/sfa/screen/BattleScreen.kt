@@ -7,6 +7,7 @@ import com.pipai.sfa.battle.components.Crop
 import com.pipai.sfa.battle.components.CropSchema
 import com.pipai.sfa.battle.components.Unit
 import com.pipai.sfa.battle.components.UnitSchema
+import com.pipai.sfa.battle.schemaindex.CropSchemaIndex
 import org.slf4j.LoggerFactory
 
 class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
@@ -23,6 +24,9 @@ class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
 		val unitSchema = UnitSchema("Red Riding Hood", 0, 0, 0, 0)
 		val unit = Unit(unitSchema, "Ruby", 0, 0, 0, 0)
 		LOGGER.info("Hello world: " + unit)
+
+		val cropSchemaIndex = CropSchemaIndex(Gdx.files.internal("data/crops.csv"))
+		LOGGER.info("Crop Schema Index: " + cropSchemaIndex.allCropSchemas)
 	}
 
 	override fun render(delta: Float) {
