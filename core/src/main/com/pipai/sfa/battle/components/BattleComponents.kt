@@ -19,7 +19,7 @@ data class UnitSchema(
 		val patk: Int,
 		val pdef: Int,
 		val speed: Int)
-				
+
 data class Unit(
 		val schema: UnitSchema,
 		val name: String,
