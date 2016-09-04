@@ -56,12 +56,35 @@ data class PlayerFarm(
 		var hp: Int)
 
 data class PlayerTeam(
+		val name: String,
 		val farm: PlayerFarm,
 		val crew: List<PlayerUnit>,
 		val crops: List<PlayerCrop>,
-		val cropYields: MutableMap<Crop, Int>
+		val cropYields: MutableMap<PlayerCrop, Int>
 )
 
 data class Battle(
 		val player1: PlayerTeam,
-		val player2: PlayerTeam)
+		val player2: PlayerTeam) {
+
+	fun getPlayerForUnit(unit: PlayerUnit): Player {
+		if (player1.crew.contains(unit)) {
+			return Player.PLAYER_1
+		} else if (player2.crew.contains(unit)) {
+			return Player.PLAYER_2
+		} else {
+			return Player.NONE
+		}
+	}
+
+	fun getPlayerForCrop(crop: PlayerCrop): Player {
+		if (player1.crops.contains(crop)) {
+			return Player.PLAYER_1
+		} else if (player2.crops.contains(crop)) {
+			return Player.PLAYER_2
+		} else {
+			return Player.NONE
+		}
+	}
+
+}

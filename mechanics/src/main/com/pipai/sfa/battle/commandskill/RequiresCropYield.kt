@@ -1,22 +1,23 @@
 package com.pipai.sfa.battle.commandskill
 
 import com.pipai.sfa.battle.domain.Crop
+import com.pipai.sfa.battle.domain.PlayerCrop
 
 interface RequiresCropYield {
 
-	fun setCropYield(cropYield: Crop)
-	fun getCropYield(): Crop
+	fun setCropYield(cropYield: PlayerCrop)
+	fun getCropYield(): PlayerCrop
 	fun clearCropYield()
 }
 
 interface RequiresCropYieldMixin : RequiresCropYield {
 	val requiresCropYieldImpl: RequiresCropYieldImpl
 
-	override fun setCropYield(cropYield: Crop) {
+	override fun setCropYield(cropYield: PlayerCrop) {
 		requiresCropYieldImpl.setCropYield(cropYield)
 	}
 
-	override fun getCropYield(): Crop {
+	override fun getCropYield(): PlayerCrop {
 		return requiresCropYieldImpl.getCropYield()
 	}
 
@@ -27,13 +28,13 @@ interface RequiresCropYieldMixin : RequiresCropYield {
 
 class RequiresCropYieldImpl : RequiresCropYield {
 
-	private var cropYield: Crop? = null
+	private var cropYield: PlayerCrop? = null
 
-	override fun setCropYield(cropYield: Crop) {
+	override fun setCropYield(cropYield: PlayerCrop) {
 		this.cropYield = cropYield
 	}
 
-	override fun getCropYield(): Crop {
+	override fun getCropYield(): PlayerCrop {
 		return cropYield ?: throw CommandGenerationException("No crop yield was selected")
 	}
 
