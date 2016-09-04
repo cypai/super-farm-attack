@@ -209,7 +209,7 @@
     <property name="file" value="${config_loc}/suppression.xml"/>
   </module>
   <module name="RegexpSingleline">
-    <property name="format" value="^.+\w+\n$"/>
+    <property name="format" value="\s+$"/>
     <property name="message" value="Trailing whitespace"/>
     <property name="fileExtensions" value="kt"/>
   </module>
