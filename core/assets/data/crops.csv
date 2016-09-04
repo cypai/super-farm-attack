@@ -1,4 +1,4 @@
-name,pAtk,growth,mass
-Potato,3,1,5
-Melon,5,1,10
-Watermelon,10,1,20
+name,hp,pAtk,pDef,yieldTime,mass
+Potato,15,3,5,1,5
+Melon,15,5,3,1,10
+Watermelon,15,10,3,1,20

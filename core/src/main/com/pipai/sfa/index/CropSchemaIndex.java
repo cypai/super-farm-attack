@@ -9,7 +9,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.google.common.collect.ImmutableList;
-import com.pipai.sfa.battle.components.CropSchema;
+import com.pipai.sfa.battle.domain.CropSchema;
 
 public class CropSchemaIndex {
 
@@ -24,8 +24,10 @@ public class CropSchemaIndex {
 			for (CSVRecord record : parser.getRecords()) {
 				String name = record.get("name");
 				cropIndex.put(name, new CropSchema(name,
+						Integer.valueOf(record.get("hp")),
 						Integer.valueOf(record.get("pAtk")),
-						Integer.valueOf(record.get("growth")),
+						Integer.valueOf(record.get("pDef")),
+						Integer.valueOf(record.get("yieldTime")),
 						Integer.valueOf(record.get("mass"))));
 			}
 		} catch (IOException e) {

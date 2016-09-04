@@ -1,4 +1,4 @@
-package com.pipai.sfa.battle.schemaindex;
+package com.pipai.sfa.index;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,8 +6,7 @@ import org.junit.Test;
 import com.badlogic.gdx.Gdx;
 import com.google.common.collect.ImmutableList;
 import com.pipai.libgdx.test.GdxMockedTest;
-import com.pipai.sfa.battle.components.CropSchema;
-import com.pipai.sfa.index.CropSchemaIndex;
+import com.pipai.sfa.battle.domain.CropSchema;
 
 public class CropSchemaIndexTest extends GdxMockedTest {
 

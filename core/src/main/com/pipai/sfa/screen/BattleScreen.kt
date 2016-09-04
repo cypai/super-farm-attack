@@ -3,11 +3,11 @@ package com.pipai.sfa.screen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.pipai.sfa.SfaGame
-import com.pipai.sfa.battle.components.Crop
-import com.pipai.sfa.battle.components.CropSchema
-import com.pipai.sfa.battle.components.Unit
-import com.pipai.sfa.battle.components.UnitSchema
-import com.pipai.sfa.battle.schemaindex.CropSchemaIndex
+import com.pipai.sfa.battle.domain.Crop
+import com.pipai.sfa.battle.domain.CropSchema
+import com.pipai.sfa.battle.domain.Unit
+import com.pipai.sfa.battle.domain.UnitSchema
+import com.pipai.sfa.index.CropSchemaIndex
 import org.slf4j.LoggerFactory
 
 class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
@@ -17,14 +17,6 @@ class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
 	}
 
 	init {
-		val cropSchema = CropSchema("Potato", 0, 0, 0)
-		val crop = Crop(cropSchema, "Potato Actual", 0, 0, 0)
-		LOGGER.info("Hello world: " + crop)
-
-		val unitSchema = UnitSchema("Red Riding Hood", 0, 0, 0, 0)
-		val unit = Unit(unitSchema, "Ruby", 0, 0, 0, 0)
-		LOGGER.info("Hello world: " + unit)
-
 		val cropSchemaIndex = CropSchemaIndex(Gdx.files.internal("data/crops.csv"))
 		LOGGER.info("Crop Schema Index: " + cropSchemaIndex.allCropSchemas)
 	}
