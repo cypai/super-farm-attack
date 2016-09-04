@@ -13,6 +13,7 @@ data class CropSchema(
 data class Crop(
 		val schema: CropSchema,
 		val nickname: String,
+		val id: Int,
 		val hp: Int,
 		val patk: Int,
 		val pdef: Int,
@@ -35,6 +36,7 @@ data class UnitSchema(
 data class Unit(
 		val schema: UnitSchema,
 		val nickname: String,
+		val id: Int,
 		val level: Int,
 		val hp: Int,
 		val patk: Int,
