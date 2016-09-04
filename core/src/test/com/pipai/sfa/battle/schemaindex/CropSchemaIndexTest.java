@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.google.common.collect.ImmutableList;
 import com.pipai.libgdx.test.GdxMockedTest;
 import com.pipai.sfa.battle.components.CropSchema;
+import com.pipai.sfa.index.CropSchemaIndex;
 
 public class CropSchemaIndexTest extends GdxMockedTest {
 

@@ -1,4 +1,4 @@
-package com.pipai.sfa.battle.schemaindex;
+package com.pipai.sfa.index;
 
 import java.io.IOException;
 import java.util.HashMap;
