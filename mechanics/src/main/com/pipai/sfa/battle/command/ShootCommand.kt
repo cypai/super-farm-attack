@@ -43,7 +43,7 @@ class ShootCommand
 						+ " Player: ${player.name} Context: $this")
 			} else {
 				player.cropYields.put(cropToUse, amount - 1)
-				eventList.add(CropYieldChangeEvent(playerEnum, cropToUse, -1))
+				eventList.add(CropYieldChangeEvent(cropToUse, -1))
 
 				eventList.add(TextEvent(""
 						+ "${player.name}'s ${getDetailedName(performingUnit)}"

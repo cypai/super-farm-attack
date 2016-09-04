@@ -12,7 +12,7 @@ class ShootSkill : UnitSkill(), RequiresPerformerMixin, RequiresTargetMixin, Req
 
 	override fun getName(): String = "Shoot"
 
-	override fun generateCommandImpl(controller: BattleController): BattleCommand {
+	override fun generateCommand(controller: BattleController): BattleCommand {
 		return ShootCommand(controller, getPerformer(), getTarget(), getCropYield())
 	}
 

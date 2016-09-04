@@ -7,7 +7,17 @@ data class CropSchema(
 		val patk: Int,
 		val pdef: Int,
 		val yieldTime: Int,
-		val mass: Int)
+		val mass: Int) {
+
+	companion object {
+		private var nextId = 0
+	}
+
+	fun generateCrop(nickname: String): Crop {
+		nextId += 1
+		return Crop(this, if (nickname == "") name else nickname, nextId, hp, patk, pdef, yieldTime, mass)
+	}
+}
 
 // The crop that the player owns
 data class Crop(
@@ -18,7 +28,12 @@ data class Crop(
 		val patk: Int,
 		val pdef: Int,
 		val yieldTime: Int,
-		val mass: Int)
+		val mass: Int) {
+
+	fun generatePlayerCrop(): PlayerCrop {
+		return PlayerCrop(this, hp, yieldTime)
+	}
+}
 
 // The actual crop in battle
 data class PlayerCrop(
@@ -31,7 +46,17 @@ data class UnitSchema(
 		val hp: Int,
 		val patk: Int,
 		val pdef: Int,
-		val speed: Int)
+		val speed: Int) {
+
+	companion object {
+		private var nextId = 0
+	}
+
+	fun generateUnit(nickname: String): Unit {
+		nextId += 1
+		return Unit(this, if (nickname == "") name else nickname, nextId, 1, hp, patk, pdef, speed)
+	}
+}
 
 data class Unit(
 		val schema: UnitSchema,
@@ -41,7 +66,12 @@ data class Unit(
 		val hp: Int,
 		val patk: Int,
 		val pdef: Int,
-		val speed: Int)
+		val speed: Int) {
+
+	fun generatePlayerUnit(): PlayerUnit {
+		return PlayerUnit(this, hp)
+	}
+}
 
 data class PlayerUnit(
 		val unit: Unit,
@@ -49,7 +79,12 @@ data class PlayerUnit(
 
 data class Farm(
 		val name: String,
-		val hp: Int)
+		val hp: Int) {
+
+	fun generatePlayerFarm(): PlayerFarm {
+		return PlayerFarm(this, hp)
+	}
+}
 
 data class PlayerFarm(
 		val farm: Farm,

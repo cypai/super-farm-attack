@@ -7,13 +7,13 @@ public abstract class UnitSkill {
 
 	public abstract String getName();
 
-	public final BattleCommand generateCommand(BattleController controller) {
-		BattleCommand command = generateCommandImpl(controller);
+	public final void sendCommand(BattleController controller) {
+		BattleCommand command = generateCommand(controller);
 		clearCommandParameters();
-		return command;
+		controller.sendBattleCommand(command);
 	}
 
-	protected abstract BattleCommand generateCommandImpl(BattleController controller);
+	protected abstract BattleCommand generateCommand(BattleController controller);
 
 	protected abstract void clearCommandParameters();
 

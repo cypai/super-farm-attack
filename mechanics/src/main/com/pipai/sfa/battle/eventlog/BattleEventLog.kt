@@ -9,6 +9,10 @@ class BattleEventLog {
 		turnLog.add(event)
 	}
 
+	fun addEvents(events: List<BattleEvent>) {
+		turnLog.addAll(events)
+	}
+
 	fun endTurn(): List<BattleEvent> {
 		val theTurnLog = turnLog.toList()
 		fullLog.addAll(turnLog)
