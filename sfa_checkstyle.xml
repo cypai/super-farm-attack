@@ -218,4 +218,9 @@
     <property name="message" value="Maximum line length of 120 exceeded"/>
     <property name="fileExtensions" value="kt"/>
   </module>
+  <module name="RegexpSingleline">
+    <property name="format" value="\+$"/>
+    <property name="message" value="Operators should go on a new line"/>
+    <property name="fileExtensions" value="kt"/>
+  </module>
 </module>
