@@ -3,11 +3,8 @@ package com.pipai.sfa.screen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.pipai.sfa.SfaGame
-import com.pipai.sfa.battle.domain.Crop
-import com.pipai.sfa.battle.domain.CropSchema
-import com.pipai.sfa.battle.domain.Unit
-import com.pipai.sfa.battle.domain.UnitSchema
 import com.pipai.sfa.index.CropSchemaIndex
+import com.pipai.sfa.index.UnitSchemaIndex
 import org.slf4j.LoggerFactory
 
 class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
@@ -19,6 +16,9 @@ class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
 	init {
 		val cropSchemaIndex = CropSchemaIndex(Gdx.files.internal("data/crops.csv"))
 		LOGGER.info("Crop Schema Index: " + cropSchemaIndex.allCropSchemas)
+
+		val unitSchemaIndex = UnitSchemaIndex(Gdx.files.internal("data/crewUnits.csv"))
+		LOGGER.info("Unit Schema Index: " + unitSchemaIndex.allUnitSchemas)
 	}
 
 	override fun render(delta: Float) {
