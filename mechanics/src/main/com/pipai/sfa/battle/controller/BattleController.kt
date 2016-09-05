@@ -64,6 +64,7 @@ class BattleController(val battle: Battle) {
 		commands.sortByDescending { command -> command.speed() }
 		commands.sortByDescending { command -> command.priority() }
 
+		var battleFinished = false
 		for (command in commands) {
 			val events = command.perform()
 			battleLog.addEvents(events)
@@ -71,7 +72,17 @@ class BattleController(val battle: Battle) {
 			val outcome = checkBattleOutcome()
 			if (outcome != BattleOutcome.NONE) {
 				battleLog.addEvent(BattleOutcomeEvent(outcome))
+				battleFinished = true
 				break
+			}
+		}
+
+		if (!battleFinished) {
+			for (crop in battle.player1.crops) {
+				battleLog.addEvents(decreaseTurnTimer(crop))
+			}
+			for (crop in battle.player2.crops) {
+				battleLog.addEvents(decreaseTurnTimer(crop))
 			}
 		}
 
@@ -92,8 +103,8 @@ class BattleController(val battle: Battle) {
 
 		if (crop.turnsUntilYield <= 0) {
 			when (battle.getPlayerForCrop(crop)) {
-				Player.PLAYER_1 -> battle.player1.cropYields.put(crop, battle.player1.cropYields.get(crop)!! + 1)
-				Player.PLAYER_2 -> battle.player2.cropYields.put(crop, battle.player2.cropYields.get(crop)!! + 1)
+				Player.PLAYER_1 -> battle.player1.cropYields.put(crop.crop, battle.player1.cropYields.get(crop.crop)!! + 1)
+				Player.PLAYER_2 -> battle.player2.cropYields.put(crop.crop, battle.player2.cropYields.get(crop.crop)!! + 1)
 				Player.NONE -> throw IllegalStateException("Crop ${crop} belongs to neither player in battle}")
 			}
 			events.add(CropYieldChangeEvent(crop, 1))

@@ -32,9 +32,9 @@ class ShootCommand
 			Player.NONE -> throw IllegalStateException("Performing unit is not in either player's crew")
 		}
 
-		if (player.cropYields.containsKey(cropToUse)) {
+		if (player.cropYields.containsKey(cropToUse.crop)) {
 
-			val amount = player.cropYields.get(cropToUse) ?:
+			val amount = player.cropYields.get(cropToUse.crop) ?:
 					throw IllegalStateException("Attempted to use a crop where the yield amount was null."
 							+ " Player: ${player.name} Context: $this")
 
@@ -42,7 +42,7 @@ class ShootCommand
 				throw IllegalStateException("Attempted to use a crop where the yield amount is currently <= 0."
 						+ " Player: ${player.name} Context: $this")
 			} else {
-				player.cropYields.put(cropToUse, amount - 1)
+				player.cropYields.put(cropToUse.crop, amount - 1)
 				eventList.add(CropYieldChangeEvent(cropToUse, -1))
 
 				eventList.add(TextEvent(""

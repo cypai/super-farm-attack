@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.pipai.sfa.battle.commandskill.ShootSkill;
 import com.pipai.sfa.battle.controller.BattleController;
 import com.pipai.sfa.battle.controller.BattleObserver;
+import com.pipai.sfa.battle.controller.BattleOutcome;
 import com.pipai.sfa.battle.domain.Battle;
 import com.pipai.sfa.battle.domain.Crop;
 import com.pipai.sfa.battle.domain.CropSchema;
@@ -22,6 +23,7 @@ import com.pipai.sfa.battle.domain.PlayerTeamFactory;
 import com.pipai.sfa.battle.domain.Unit;
 import com.pipai.sfa.battle.domain.UnitSchema;
 import com.pipai.sfa.battle.eventlog.BattleEvent;
+import com.pipai.sfa.battle.eventlog.BattleEvent.BattleOutcomeEvent;
 
 public class FullBattleTest {
 
@@ -78,6 +80,25 @@ public class FullBattleTest {
 		controller.sendPlayer2ReadySignal();
 
 		Assert.assertTrue(observer.getObservedEvents().size() > 0);
+
+		shootSkill.setCropYield(battle.getPlayer1().getCrops().get(0));
+		shootSkill.setPerformer(battle.getPlayer1().getCrew().get(1));
+		shootSkill.setTarget(battle.getPlayer2().getCrew().get(0));
+		shootSkill.sendCommand(controller);
+
+		controller.sendPlayer1ReadySignal();
+
+		shootSkill.setCropYield(battle.getPlayer2().getCrops().get(0));
+		shootSkill.setPerformer(battle.getPlayer2().getCrew().get(0));
+		shootSkill.setTarget(battle.getPlayer1().getCrew().get(0));
+		shootSkill.sendCommand(controller);
+
+		controller.sendPlayer2ReadySignal();
+
+		List<BattleEvent> events = observer.getObservedEvents();
+		BattleEvent finalEvent = events.get(events.size() - 1);
+		Assert.assertTrue(finalEvent instanceof BattleOutcomeEvent);
+		Assert.assertEquals(BattleOutcome.PLAYER1_VICTORY, ((BattleOutcomeEvent) finalEvent).getOutcome());
 	}
 
 	private static class LogbackBattleObserver implements BattleObserver {
@@ -91,9 +112,10 @@ public class FullBattleTest {
 		@Override
 		public void handleTurnResults(List<? extends BattleEvent> events) {
 			for (BattleEvent event : events) {
-				LOGGER.info(ToStringBuilder.reflectionToString(event));
+				LOGGER.trace(ToStringBuilder.reflectionToString(event));
 				observedEvents.add(event);
 			}
+			LOGGER.trace("Turn ended");
 		}
 
 		public ImmutableList<BattleEvent> getObservedEvents() {

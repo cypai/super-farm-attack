@@ -95,7 +95,7 @@ data class PlayerTeam(
 		val farm: PlayerFarm,
 		val crew: List<PlayerUnit>,
 		val crops: List<PlayerCrop>,
-		val cropYields: MutableMap<PlayerCrop, Int>
+		val cropYields: MutableMap<Crop, Int>
 )
 
 data class Battle(
