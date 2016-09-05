@@ -34,7 +34,7 @@ class RequiresPerformerImpl : RequiresPerformer {
 	}
 
 	override fun getPerformer(): PlayerUnit {
-		return performer ?: throw CommandGenerationException("No crop yield was selected")
+		return performer ?: throw CommandGenerationException("No performer PlayerUnit was selected")
 	}
 
 	override fun clearPerformer() {

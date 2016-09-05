@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.pipai.sfa.battle.commandskill.ShootSkill;
 import com.pipai.sfa.battle.controller.BattleController;
 import com.pipai.sfa.battle.controller.BattleObserver;
@@ -20,6 +21,7 @@ import com.pipai.sfa.battle.domain.CropSchema;
 import com.pipai.sfa.battle.domain.Farm;
 import com.pipai.sfa.battle.domain.PlayerTeam;
 import com.pipai.sfa.battle.domain.PlayerTeamFactory;
+import com.pipai.sfa.battle.domain.PlotLocation;
 import com.pipai.sfa.battle.domain.Unit;
 import com.pipai.sfa.battle.domain.UnitSchema;
 import com.pipai.sfa.battle.eventlog.BattleEvent;
@@ -41,23 +43,23 @@ public class FullBattleTest {
 		Unit unit12 = speedTwoSchema.generateUnit("Unit 1 2");
 		Unit unit22 = speedTwoSchema.generateUnit("Unit 2 2");
 
-		Farm farm1 = new Farm("Player 1 Farm", 10);
-		Farm farm2 = new Farm("Player 2 Farm", 10);
+		Farm farm1 = new Farm("Player 1 Farm", 3);
+		Farm farm2 = new Farm("Player 2 Farm", 3);
 
 		PlayerTeamFactory factory = new PlayerTeamFactory();
 		PlayerTeam team1 = factory.generatePlayerTeam(
 				"Team 1",
 				farm1,
-				ImmutableList.of(unit11, unit12),
-				ImmutableList.of(crop1));
+				ImmutableMap.of(unit11, new PlotLocation(0, 0), unit12, new PlotLocation(0, 1)),
+				ImmutableMap.of(crop1, new PlotLocation(1, 0)));
 
 		PlayerTeam team2 = factory.generatePlayerTeam(
 				"Team 2",
 				farm2,
-				ImmutableList.of(unit22),
-				ImmutableList.of(crop2));
+				ImmutableMap.of(unit22, new PlotLocation(0, 0)),
+				ImmutableMap.of(crop2, new PlotLocation(1, 0)));
 
-		Battle battle = new Battle(team1, team2);
+		Battle battle = new Battle(3, 3, team1, team2);
 
 		BattleController controller = new BattleController(battle);
 
@@ -67,14 +69,14 @@ public class FullBattleTest {
 		ShootSkill shootSkill = new ShootSkill();
 		shootSkill.setCropYield(battle.getPlayer1().getCrops().get(0));
 		shootSkill.setPerformer(battle.getPlayer1().getCrew().get(0));
-		shootSkill.setTarget(battle.getPlayer2().getCrew().get(0));
+		shootSkill.setTargetPlotLocation(new PlotLocation(0, 0));
 		shootSkill.sendCommand(controller);
 
 		controller.sendPlayer1ReadySignal();
 
 		shootSkill.setCropYield(battle.getPlayer2().getCrops().get(0));
 		shootSkill.setPerformer(battle.getPlayer2().getCrew().get(0));
-		shootSkill.setTarget(battle.getPlayer1().getCrew().get(0));
+		shootSkill.setTargetPlotLocation(new PlotLocation(0, 0));
 		shootSkill.sendCommand(controller);
 
 		controller.sendPlayer2ReadySignal();
@@ -83,15 +85,24 @@ public class FullBattleTest {
 
 		shootSkill.setCropYield(battle.getPlayer1().getCrops().get(0));
 		shootSkill.setPerformer(battle.getPlayer1().getCrew().get(1));
-		shootSkill.setTarget(battle.getPlayer2().getCrew().get(0));
+		shootSkill.setTargetPlotLocation(new PlotLocation(0, 0));
 		shootSkill.sendCommand(controller);
 
 		controller.sendPlayer1ReadySignal();
 
 		shootSkill.setCropYield(battle.getPlayer2().getCrops().get(0));
 		shootSkill.setPerformer(battle.getPlayer2().getCrew().get(0));
-		shootSkill.setTarget(battle.getPlayer1().getCrew().get(0));
+		shootSkill.setTargetPlotLocation(new PlotLocation(0, 0));
 		shootSkill.sendCommand(controller);
+
+		controller.sendPlayer2ReadySignal();
+
+		shootSkill.setCropYield(battle.getPlayer1().getCrops().get(0));
+		shootSkill.setPerformer(battle.getPlayer1().getCrew().get(0));
+		shootSkill.setTargetPlotLocation(new PlotLocation(0, 0));
+		shootSkill.sendCommand(controller);
+
+		controller.sendPlayer1ReadySignal();
 
 		controller.sendPlayer2ReadySignal();
 
@@ -112,10 +123,9 @@ public class FullBattleTest {
 		@Override
 		public void handleTurnResults(List<? extends BattleEvent> events) {
 			for (BattleEvent event : events) {
-				LOGGER.trace(ToStringBuilder.reflectionToString(event));
+				LOGGER.debug(ToStringBuilder.reflectionToString(event));
 				observedEvents.add(event);
 			}
-			LOGGER.trace("Turn ended");
 		}
 
 		public ImmutableList<BattleEvent> getObservedEvents() {

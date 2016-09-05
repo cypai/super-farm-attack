@@ -1,5 +1,12 @@
 package com.pipai.sfa.battle.domain
 
+data class PlotLocation(val col: Int, val row: Int)
+
+interface PlotObject {
+	var hp: Int
+	var plotLocation: PlotLocation
+}
+
 // Base version
 data class CropSchema(
 		val name: String,
@@ -30,16 +37,19 @@ data class Crop(
 		val yieldTime: Int,
 		val mass: Int) {
 
-	fun generatePlayerCrop(): PlayerCrop {
-		return PlayerCrop(this, hp, yieldTime)
+	fun generatePlayerCrop(plotLocation: PlotLocation): PlayerCrop {
+		return PlayerCrop(this, hp, yieldTime, plotLocation)
 	}
 }
 
 // The actual crop in battle
 data class PlayerCrop(
 		val crop: Crop,
-		var hp: Int,
-		var turnsUntilYield: Int)
+		override var hp: Int,
+		var turnsUntilYield: Int,
+		override var plotLocation: PlotLocation) : PlotObject
+
+data class FieldCrop(val crop: Crop, val shooter: PlayerUnit, val targetPlotLocation: PlotLocation)
 
 data class UnitSchema(
 		val name: String,
@@ -68,14 +78,15 @@ data class Unit(
 		val pdef: Int,
 		val speed: Int) {
 
-	fun generatePlayerUnit(): PlayerUnit {
-		return PlayerUnit(this, hp)
+	fun generatePlayerUnit(plotLocation: PlotLocation): PlayerUnit {
+		return PlayerUnit(this, hp, plotLocation)
 	}
 }
 
 data class PlayerUnit(
 		val unit: Unit,
-		var hp: Int)
+		override var hp: Int,
+		override var plotLocation: PlotLocation) : PlotObject
 
 data class Farm(
 		val name: String,
@@ -99,8 +110,28 @@ data class PlayerTeam(
 )
 
 data class Battle(
+		val plotRows: Int,
+		val plotColumns: Int,
 		val player1: PlayerTeam,
 		val player2: PlayerTeam) {
+
+	fun getObjectsAtLocationField1(location: PlotLocation): List<PlotObject> {
+		val plotLocationObjects: MutableList<PlotObject> = mutableListOf()
+
+		plotLocationObjects.addAll(player1.crew.filter { it.plotLocation == location })
+		plotLocationObjects.addAll(player1.crops.filter { it.plotLocation == location })
+
+		return plotLocationObjects.toList()
+	}
+
+	fun getObjectsAtLocationField2(location: PlotLocation): List<PlotObject> {
+		val plotLocationObjects: MutableList<PlotObject> = mutableListOf()
+
+		plotLocationObjects.addAll(player2.crew.filter { it.plotLocation == location })
+		plotLocationObjects.addAll(player2.crops.filter { it.plotLocation == location })
+
+		return plotLocationObjects.toList()
+	}
 
 	fun getPlayerForUnit(unit: PlayerUnit): Player {
 		if (player1.crew.contains(unit)) {
@@ -116,6 +147,16 @@ data class Battle(
 		if (player1.crops.contains(crop)) {
 			return Player.PLAYER_1
 		} else if (player2.crops.contains(crop)) {
+			return Player.PLAYER_2
+		} else {
+			return Player.NONE
+		}
+	}
+
+	fun getPlayerForCrop(crop: Crop): Player {
+		if (player1.crops.map { it.crop }.contains(crop)) {
+			return Player.PLAYER_1
+		} else if (player2.crops.map { it.crop }.contains(crop)) {
 			return Player.PLAYER_2
 		} else {
 			return Player.NONE

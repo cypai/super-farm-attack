@@ -4,7 +4,7 @@ import com.pipai.sfa.battle.domain.PlayerUnit
 
 interface RequiresTarget {
 
-	fun setTarget(performer: PlayerUnit)
+	fun setTarget(target: PlayerUnit)
 	fun getTarget(): PlayerUnit
 	fun clearTarget()
 }
@@ -12,8 +12,8 @@ interface RequiresTarget {
 interface RequiresTargetMixin : RequiresTarget {
 	val requiresTargetImpl: RequiresTargetImpl
 
-	override fun setTarget(performer: PlayerUnit) {
-		requiresTargetImpl.setTarget(performer)
+	override fun setTarget(target: PlayerUnit) {
+		requiresTargetImpl.setTarget(target)
 	}
 
 	override fun getTarget(): PlayerUnit {
@@ -29,12 +29,12 @@ class RequiresTargetImpl : RequiresTarget {
 
 	private var target: PlayerUnit? = null
 
-	override fun setTarget(performer: PlayerUnit) {
-		this.target = performer
+	override fun setTarget(target: PlayerUnit) {
+		this.target = target
 	}
 
 	override fun getTarget(): PlayerUnit {
-		return target ?: throw CommandGenerationException("No crop yield was selected")
+		return target ?: throw CommandGenerationException("No target PlayerUnit was selected")
 	}
 
 	override fun clearTarget() {

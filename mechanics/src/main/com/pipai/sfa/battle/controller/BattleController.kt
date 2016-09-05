@@ -15,6 +15,8 @@ import com.pipai.sfa.battle.eventlog.BattleEvent.BattleOutcomeEvent
 
 class BattleController(val battle: Battle) {
 
+	private val battleTurnEvaluator: BattleTurnEvaluator = BattleTurnEvaluator(battle)
+
 	private val battleLog: BattleEventLog = BattleEventLog()
 
 	private val observers: MutableList<BattleObserver> = mutableListOf()
@@ -61,77 +63,16 @@ class BattleController(val battle: Battle) {
 	}
 
 	private fun executeTurn() {
-		commands.sortByDescending { command -> command.speed() }
-		commands.sortByDescending { command -> command.priority() }
+		val turnEvents = battleTurnEvaluator.evaluateTurn(commands)
 
-		var battleFinished = false
-		for (command in commands) {
-			val events = command.perform()
-			battleLog.addEvents(events)
+		battleLog.addEvents(turnEvents)
 
-			val outcome = checkBattleOutcome()
-			if (outcome != BattleOutcome.NONE) {
-				battleLog.addEvent(BattleOutcomeEvent(outcome))
-				battleFinished = true
-				break
-			}
-		}
-
-		if (!battleFinished) {
-			for (crop in battle.player1.crops) {
-				battleLog.addEvents(decreaseTurnTimer(crop))
-			}
-			for (crop in battle.player2.crops) {
-				battleLog.addEvents(decreaseTurnTimer(crop))
-			}
-		}
-
-		val turnEvents = battleLog.endTurn()
 		for (observer in observers) {
 			observer.handleTurnResults(turnEvents)
 		}
 
+		commands.clear()
 		player1Ready = false
 		player2Ready = false
-	}
-
-	private fun decreaseTurnTimer(crop: PlayerCrop): List<BattleEvent> {
-		val events: MutableList<BattleEvent> = mutableListOf()
-
-		crop.turnsUntilYield -= 1
-		events.add(CropTurnsUntilYieldChangeEvent(crop, -1))
-
-		if (crop.turnsUntilYield <= 0) {
-			when (battle.getPlayerForCrop(crop)) {
-				Player.PLAYER_1 -> battle.player1.cropYields.put(crop.crop, battle.player1.cropYields.get(crop.crop)!! + 1)
-				Player.PLAYER_2 -> battle.player2.cropYields.put(crop.crop, battle.player2.cropYields.get(crop.crop)!! + 1)
-				Player.NONE -> throw IllegalStateException("Crop ${crop} belongs to neither player in battle}")
-			}
-			events.add(CropYieldChangeEvent(crop, 1))
-		}
-
-		return events.toList()
-	}
-
-	fun checkBattleOutcome(): BattleOutcome {
-		val player1Loss = teamLost(battle.player1)
-		val player2Loss = teamLost(battle.player2)
-		val outcome: BattleOutcome
-
-		if (player1Loss && player2Loss) {
-			outcome = BattleOutcome.TIE
-		} else if (player1Loss) {
-			outcome = BattleOutcome.PLAYER2_VICTORY
-		} else if (player2Loss) {
-			outcome = BattleOutcome.PLAYER1_VICTORY
-		} else {
-			outcome = BattleOutcome.NONE
-		}
-
-		return outcome
-	}
-
-	private fun teamLost(team: PlayerTeam): Boolean {
-		return team.farm.hp <= 0 || team.crew.all({ unit -> unit.hp <= 0 })
 	}
 }

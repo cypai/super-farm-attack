@@ -1,17 +1,23 @@
 package com.pipai.sfa.battle.domain
 
 class PlayerTeamFactory {
-	fun generatePlayerTeam(name: String, farm: Farm, crew: List<Unit>, crops: List<Crop>): PlayerTeam {
+	fun generatePlayerTeam(
+			name: String,
+			farm: Farm,
+			crew: Map<Unit, PlotLocation>,
+			crops: Map<Crop, PlotLocation>)
+			: PlayerTeam {
+
 		val cropYields: MutableMap<Crop, Int> = mutableMapOf()
 
-		for (crop in crops) {
-			cropYields.put(crop, 1)
+		for (cropEntry in crops) {
+			cropYields.put(cropEntry.key, 1)
 		}
 
 		return PlayerTeam(name,
 				farm.generatePlayerFarm(),
-				crew.map { x -> x.generatePlayerUnit() },
-				crops.map { x -> x.generatePlayerCrop() },
+				crew.map { x -> x.key.generatePlayerUnit(x.value) },
+				crops.map { x -> x.key.generatePlayerCrop(x.value) },
 				cropYields)
 	}
 }
