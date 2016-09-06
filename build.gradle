@@ -86,6 +86,7 @@ project(":mechanics") {
         compile "com.google.guava:guava:$guavaVersion"
         
         testCompile "junit:junit:$junitVersion"
+        testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
     }
 }
 
