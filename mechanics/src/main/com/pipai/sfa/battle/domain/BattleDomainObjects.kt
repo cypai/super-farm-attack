@@ -7,6 +7,10 @@ interface PlotObject {
 	var plotLocation: PlotLocation
 }
 
+enum class CropSize(val sizeNumber: Int) {
+	SMALL(1), MEDIUM(2), LARGE(3)
+}
+
 // Base version
 data class CropSchema(
 		val name: String,
@@ -14,7 +18,7 @@ data class CropSchema(
 		val patk: Int,
 		val pdef: Int,
 		val yieldTime: Int,
-		val mass: Int) {
+		val size: CropSize) {
 
 	companion object {
 		private var nextId = 0
@@ -22,7 +26,7 @@ data class CropSchema(
 
 	fun generateCrop(nickname: String): Crop {
 		nextId += 1
-		return Crop(this, if (nickname == "") name else nickname, nextId, hp, patk, pdef, yieldTime, mass)
+		return Crop(this, if (nickname == "") name else nickname, nextId, hp, patk, pdef, yieldTime, size)
 	}
 }
 
@@ -35,7 +39,7 @@ data class Crop(
 		val patk: Int,
 		val pdef: Int,
 		val yieldTime: Int,
-		val mass: Int) {
+		val size: CropSize) {
 
 	fun generatePlayerCrop(plotLocation: PlotLocation): PlayerCrop {
 		return PlayerCrop(this, hp, yieldTime, plotLocation)
@@ -114,6 +118,22 @@ data class Battle(
 		val plotColumns: Int,
 		val player1: PlayerTeam,
 		val player2: PlayerTeam) {
+
+	fun getPlayer1Unit(location: PlotLocation): PlayerUnit? {
+		return player1.crew.find { it.plotLocation == location }
+	}
+
+	fun getPlayer2Unit(location: PlotLocation): PlayerUnit? {
+		return player2.crew.find { it.plotLocation == location }
+	}
+
+	fun getPlayer1Crop(location: PlotLocation): PlayerCrop? {
+		return player1.crops.find { it.plotLocation == location }
+	}
+
+	fun getPlayer2Crop(location: PlotLocation): PlayerCrop? {
+		return player2.crops.find { it.plotLocation == location }
+	}
 
 	fun getObjectsAtLocationField1(location: PlotLocation): List<PlotObject> {
 		val plotLocationObjects: MutableList<PlotObject> = mutableListOf()

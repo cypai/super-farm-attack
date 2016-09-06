@@ -1,7 +1,9 @@
 package com.pipai.sfa.battle.controller
 
 import com.pipai.sfa.battle.command.BattleCommand
+import com.pipai.sfa.battle.commandskill.BattleTurnEvaluationException
 import com.pipai.sfa.battle.domain.Battle
+import com.pipai.sfa.battle.domain.CropSize
 import com.pipai.sfa.battle.domain.FieldCrop
 import com.pipai.sfa.battle.domain.Player
 import com.pipai.sfa.battle.domain.PlayerCrop
@@ -9,8 +11,10 @@ import com.pipai.sfa.battle.domain.PlayerTeam
 import com.pipai.sfa.battle.domain.PlayerUnit
 import com.pipai.sfa.battle.domain.PlotObject
 import com.pipai.sfa.battle.eventlog.BattleEvent
+import com.pipai.sfa.battle.eventlog.BattleEvent.BattleOutcomeEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.CropTurnsUntilYieldChangeEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.CropYieldChangeEvent
+import com.pipai.sfa.battle.eventlog.BattleEvent.EndTurnEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.FarmDamageEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.FieldCropResolvedEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.PlotObjectDamageEvent
@@ -18,9 +22,6 @@ import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.util.Random
 import kotlin.comparisons.compareBy
-import com.pipai.sfa.battle.eventlog.BattleEvent.EndTurnEvent
-import com.pipai.sfa.battle.eventlog.BattleEvent.BattleOutcomeEvent
-import com.pipai.sfa.battle.commandskill.BattleTurnEvaluationException
 
 class BattleTurnEvaluator(private val battle: Battle, private val random: Random = SecureRandom()) {
 
@@ -146,16 +147,23 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 	}
 
 	private fun winnerOfCollision(fieldCrop1: FieldCrop, fieldCrop2: FieldCrop): Player {
-		return Player.NONE
+		if (fieldCrop1.crop.size == CropSize.LARGE && fieldCrop2.crop.size == CropSize.SMALL) {
+			return Player.PLAYER_1
+		} else if (fieldCrop1.crop.size == CropSize.SMALL && fieldCrop2.crop.size == CropSize.LARGE) {
+			return Player.PLAYER_2
+		} else {
+			return Player.NONE
+		}
 	}
 
 	private fun evaluateDamage(fieldCrop: FieldCrop) {
 		LOGGER.info("Evaluating damage of $fieldCrop")
 		val player = battle.getPlayerForCrop(fieldCrop.crop)
 
+		// Get the plot objects of the opposing player of the crop
 		val plotObjects = when (player) {
-			Player.PLAYER_1 -> battle.getObjectsAtLocationField1(fieldCrop.targetPlotLocation)
-			Player.PLAYER_2 -> battle.getObjectsAtLocationField2(fieldCrop.targetPlotLocation)
+			Player.PLAYER_1 -> battle.getObjectsAtLocationField2(fieldCrop.targetPlotLocation)
+			Player.PLAYER_2 -> battle.getObjectsAtLocationField1(fieldCrop.targetPlotLocation)
 			Player.NONE -> throw IllegalArgumentException("Crop ${fieldCrop.crop} does not belong to either player")
 		}
 
@@ -178,7 +186,7 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 		val baseDamage = fieldCrop.crop.patk + fieldCrop.shooter.unit.patk
 		val damage = if (halveDamage) baseDamage / 2 else baseDamage
 
-		LOGGER.info("Dealing damage to farm of $player: $damage")
+		LOGGER.info("Dealing damage to farm of ${if (player == Player.PLAYER_1) Player.PLAYER_2 else Player.PLAYER_1}: $damage")
 		farm.hp -= damage
 		events.add(FarmDamageEvent(player, damage))
 	}

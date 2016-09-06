@@ -10,6 +10,7 @@ import org.apache.commons.csv.CSVRecord;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.common.collect.ImmutableList;
 import com.pipai.sfa.battle.domain.CropSchema;
+import com.pipai.sfa.battle.domain.CropSize;
 
 public class CropSchemaIndex {
 
@@ -28,7 +29,7 @@ public class CropSchemaIndex {
 						Integer.valueOf(record.get("pAtk")),
 						Integer.valueOf(record.get("pDef")),
 						Integer.valueOf(record.get("yieldTime")),
-						Integer.valueOf(record.get("mass"))));
+						CropSize.valueOf(record.get("size"))));
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
