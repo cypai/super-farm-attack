@@ -40,4 +40,8 @@ public class CropSchemaIndex {
 		return ImmutableList.copyOf(cropIndex.values());
 	}
 
+	public int size() {
+		return cropIndex.size();
+	}
+
 }

@@ -38,4 +38,8 @@ public class UnitSchemaIndex {
 		return ImmutableList.copyOf(unitIndex.values());
 	}
 
+	public int size() {
+		return unitIndex.size();
+	}
+
 }

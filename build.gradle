@@ -59,6 +59,7 @@ project(":core") {
     dependencies {
         compile project(":mechanics")
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
         compile "ch.qos.logback:logback-classic:$logbackVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"

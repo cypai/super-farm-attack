@@ -24,7 +24,7 @@ data class CropSchema(
 		private var nextId = 0
 	}
 
-	fun generateCrop(nickname: String): Crop {
+	fun generateCrop(nickname: String = ""): Crop {
 		nextId += 1
 		return Crop(this, if (nickname == "") name else nickname, nextId, hp, patk, pdef, yieldTime, size)
 	}
@@ -66,7 +66,7 @@ data class UnitSchema(
 		private var nextId = 0
 	}
 
-	fun generateUnit(nickname: String): Unit {
+	fun generateUnit(nickname: String = ""): Unit {
 		nextId += 1
 		return Unit(this, if (nickname == "") name else nickname, nextId, 1, hp, patk, pdef, speed)
 	}

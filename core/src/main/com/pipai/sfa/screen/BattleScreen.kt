@@ -1,10 +1,12 @@
 package com.pipai.sfa.screen
 
+import com.artemis.World
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.pipai.sfa.SfaGame
-import com.pipai.sfa.index.CropSchemaIndex
-import com.pipai.sfa.index.UnitSchemaIndex
+import com.pipai.sfa.WorldGenerator
+import com.pipai.sfa.generateStandardBattle
+import com.pipai.sfa.gui.BatchHelper
 import org.slf4j.LoggerFactory
 
 class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
@@ -13,12 +15,13 @@ class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
 		private val LOGGER = LoggerFactory.getLogger(BattleScreen::class.java)
 	}
 
-	init {
-		val cropSchemaIndex = CropSchemaIndex(Gdx.files.internal("data/crops.csv"))
-		LOGGER.info("Crop Schema Index: " + cropSchemaIndex.allCropSchemas)
+	private val world: World = World()
+	private val batch: BatchHelper = game.batchHelper
 
-		val unitSchemaIndex = UnitSchemaIndex(Gdx.files.internal("data/crewUnits.csv"))
-		LOGGER.info("Unit Schema Index: " + unitSchemaIndex.allUnitSchemas)
+	init {
+		val battle = generateStandardBattle(game.unitSchemaIndex, game.cropSchemaIndex, 6, 6, 6, 6)
+		val generator = WorldGenerator(world, battle)
+		generator.generate()
 	}
 
 	override fun render(delta: Float) {
