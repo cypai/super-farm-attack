@@ -1,3 +1,7 @@
 name,hp,pAtk,pDef,speed
-Player,25,3,3,10
-Red Riding Hood,20,2,2,12
+Player,25,3,3,5
+Red Riding Hood,20,2,2,5
+Gnome,25,4,4,3
+Undine,20,2,2,5
+Sylph,17,1,1,7
+Salamander,20,5,3,4

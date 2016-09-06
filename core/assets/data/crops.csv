@@ -1,4 +1,5 @@
 name,hp,pAtk,pDef,yieldTime,size
-Potato,15,3,5,1,MEDIUM
-Melon,15,5,3,1,MEDIUM
+Grapes,15,1,3,1,SMALL
+Potato,15,3,7,1,MEDIUM
+Melon,15,5,3,1,LARGE
 Watermelon,15,10,3,1,LARGE
