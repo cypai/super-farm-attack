@@ -4,33 +4,38 @@ import com.artemis.Component
 import com.pipai.sfa.battle.domain.CropSize
 import com.pipai.sfa.battle.domain.FieldCrop
 import com.pipai.sfa.battle.domain.FieldUnit
+import com.pipai.sfa.battle.domain.Player
 import com.pipai.sfa.utils.toSimpleLocation
 
-class PlayerUnitUiData(val playerUnit: FieldUnit) {
-	var hp: Int = playerUnit.hp
-	val hpMax: Int = playerUnit.unit.hp
-	var location: Int = toSimpleLocation(playerUnit.plotLocation)
-	val patk: Int = playerUnit.unit.patk
-	val pdef: Int = playerUnit.unit.pdef
-	val speed: Int = playerUnit.unit.speed
+class PlayerComponent : Component() {
+	lateinit var player: Player
 }
 
-class TeamsComponent : Component() {
-	val playerTeam: MutableList<PlayerUnitUiData> = mutableListOf()
-	val opponentTeam: MutableList<PlayerUnitUiData> = mutableListOf()
+class FieldUnitUiData(val fieldUnit: FieldUnit) {
+	var hp: Int = fieldUnit.hp
+	val hpMax: Int = fieldUnit.unit.hp
+	var location: Int = toSimpleLocation(fieldUnit.plotLocation)
+	val patk: Int = fieldUnit.unit.patk
+	val pdef: Int = fieldUnit.unit.pdef
+	val speed: Int = fieldUnit.unit.speed
 }
 
-class PlayerCropUiData(val playerCrop: FieldCrop, var amount: Int) {
-	var hp: Int = playerCrop.hp
-	val hpMax: Int = playerCrop.crop.hp
-	var location: Int = toSimpleLocation(playerCrop.plotLocation)
-	val patk: Int = playerCrop.crop.patk
-	val pdef: Int = playerCrop.crop.pdef
-	val size: CropSize = playerCrop.crop.size
-	var turnsUntilYield: Int = playerCrop.turnsUntilYield
+class TeamComponent : Component() {
+	val teamData: MutableList<FieldUnitUiData> = mutableListOf()
+}
+
+class FieldCropUiData(private val fieldCrop: FieldCrop, var amount: Int) {
+	val name: String = fieldCrop.crop.schema.name
+	val nickname: String = fieldCrop.crop.nickname
+	var hp: Int = fieldCrop.hp
+	val hpMax: Int = fieldCrop.crop.hp
+	var location: Int = toSimpleLocation(fieldCrop.plotLocation)
+	val patk: Int = fieldCrop.crop.patk
+	val pdef: Int = fieldCrop.crop.pdef
+	val size: CropSize = fieldCrop.crop.size
+	var turnsUntilYield: Int = fieldCrop.turnsUntilYield
 }
 
 class CropsComponent : Component() {
-	val playerCrops: MutableList<PlayerCropUiData> = mutableListOf()
-	val opponentCrops: MutableList<PlayerCropUiData> = mutableListOf()
+	val cropsData: MutableList<FieldCropUiData> = mutableListOf()
 }
