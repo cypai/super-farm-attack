@@ -24,14 +24,14 @@ data class CropSchema(
 		private var nextId = 0
 	}
 
-	fun generateCrop(nickname: String = ""): Crop {
+	fun generateCrop(nickname: String = ""): PlayerCrop {
 		nextId += 1
-		return Crop(this, if (nickname == "") name else nickname, nextId, hp, patk, pdef, yieldTime, size)
+		return PlayerCrop(this, if (nickname == "") name else nickname, nextId, hp, patk, pdef, yieldTime, size)
 	}
 }
 
 // The crop that the player owns
-data class Crop(
+data class PlayerCrop(
 		val schema: CropSchema,
 		val nickname: String,
 		val id: Int,
@@ -41,19 +41,19 @@ data class Crop(
 		val yieldTime: Int,
 		val size: CropSize) {
 
-	fun generatePlayerCrop(plotLocation: PlotLocation): PlayerCrop {
-		return PlayerCrop(this, hp, yieldTime, plotLocation)
+	fun generatePlayerCrop(plotLocation: PlotLocation): FieldCrop {
+		return FieldCrop(this, hp, yieldTime, plotLocation)
 	}
 }
 
 // The actual crop in battle
-data class PlayerCrop(
-		val crop: Crop,
+data class FieldCrop(
+		val crop: PlayerCrop,
 		override var hp: Int,
 		var turnsUntilYield: Int,
 		override var plotLocation: PlotLocation) : PlotObject
 
-data class FieldCrop(val crop: Crop, val shooter: PlayerUnit, val targetPlotLocation: PlotLocation)
+data class AmmoCrop(val crop: PlayerCrop, val shooter: FieldUnit, val targetPlotLocation: PlotLocation)
 
 data class UnitSchema(
 		val name: String,
@@ -66,13 +66,13 @@ data class UnitSchema(
 		private var nextId = 0
 	}
 
-	fun generateUnit(nickname: String = ""): Unit {
+	fun generateUnit(nickname: String = ""): PlayerUnit {
 		nextId += 1
-		return Unit(this, if (nickname == "") name else nickname, nextId, 1, hp, patk, pdef, speed)
+		return PlayerUnit(this, if (nickname == "") name else nickname, nextId, 1, hp, patk, pdef, speed)
 	}
 }
 
-data class Unit(
+data class PlayerUnit(
 		val schema: UnitSchema,
 		val nickname: String,
 		val id: Int,
@@ -82,13 +82,13 @@ data class Unit(
 		val pdef: Int,
 		val speed: Int) {
 
-	fun generatePlayerUnit(plotLocation: PlotLocation): PlayerUnit {
-		return PlayerUnit(this, hp, plotLocation)
+	fun generatePlayerUnit(plotLocation: PlotLocation): FieldUnit {
+		return FieldUnit(this, hp, plotLocation)
 	}
 }
 
-data class PlayerUnit(
-		val unit: Unit,
+data class FieldUnit(
+		val unit: PlayerUnit,
 		override var hp: Int,
 		override var plotLocation: PlotLocation) : PlotObject
 
@@ -108,9 +108,9 @@ data class PlayerFarm(
 data class PlayerTeam(
 		val name: String,
 		val farm: PlayerFarm,
-		val crew: List<PlayerUnit>,
-		val crops: List<PlayerCrop>,
-		val cropYields: MutableMap<Crop, Int>
+		val crew: List<FieldUnit>,
+		val crops: List<FieldCrop>,
+		val cropYields: MutableMap<PlayerCrop, Int>
 )
 
 data class Battle(
@@ -119,19 +119,19 @@ data class Battle(
 		val player1: PlayerTeam,
 		val player2: PlayerTeam) {
 
-	fun getPlayer1Unit(location: PlotLocation): PlayerUnit? {
+	fun getPlayer1Unit(location: PlotLocation): FieldUnit? {
 		return player1.crew.find { it.plotLocation == location }
 	}
 
-	fun getPlayer2Unit(location: PlotLocation): PlayerUnit? {
+	fun getPlayer2Unit(location: PlotLocation): FieldUnit? {
 		return player2.crew.find { it.plotLocation == location }
 	}
 
-	fun getPlayer1Crop(location: PlotLocation): PlayerCrop? {
+	fun getPlayer1Crop(location: PlotLocation): FieldCrop? {
 		return player1.crops.find { it.plotLocation == location }
 	}
 
-	fun getPlayer2Crop(location: PlotLocation): PlayerCrop? {
+	fun getPlayer2Crop(location: PlotLocation): FieldCrop? {
 		return player2.crops.find { it.plotLocation == location }
 	}
 
@@ -153,7 +153,7 @@ data class Battle(
 		return plotLocationObjects.toList()
 	}
 
-	fun getPlayerForUnit(unit: PlayerUnit): Player {
+	fun getPlayerForUnit(unit: FieldUnit): Player {
 		if (player1.crew.contains(unit)) {
 			return Player.PLAYER_1
 		} else if (player2.crew.contains(unit)) {
@@ -163,7 +163,7 @@ data class Battle(
 		}
 	}
 
-	fun getPlayerForCrop(crop: PlayerCrop): Player {
+	fun getPlayerForCrop(crop: FieldCrop): Player {
 		if (player1.crops.contains(crop)) {
 			return Player.PLAYER_1
 		} else if (player2.crops.contains(crop)) {
@@ -173,7 +173,7 @@ data class Battle(
 		}
 	}
 
-	fun getPlayerForCrop(crop: Crop): Player {
+	fun getPlayerForCrop(crop: PlayerCrop): Player {
 		if (player1.crops.map { it.crop }.contains(crop)) {
 			return Player.PLAYER_1
 		} else if (player2.crops.map { it.crop }.contains(crop)) {

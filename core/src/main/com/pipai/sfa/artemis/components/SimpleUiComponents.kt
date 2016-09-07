@@ -2,11 +2,11 @@ package com.pipai.sfa.artemis.components
 
 import com.artemis.Component
 import com.pipai.sfa.battle.domain.CropSize
-import com.pipai.sfa.battle.domain.PlayerCrop
-import com.pipai.sfa.battle.domain.PlayerUnit
+import com.pipai.sfa.battle.domain.FieldCrop
+import com.pipai.sfa.battle.domain.FieldUnit
 import com.pipai.sfa.utils.toSimpleLocation
 
-class PlayerUnitUiData(val playerUnit: PlayerUnit) {
+class PlayerUnitUiData(val playerUnit: FieldUnit) {
 	var hp: Int = playerUnit.hp
 	val hpMax: Int = playerUnit.unit.hp
 	var location: Int = toSimpleLocation(playerUnit.plotLocation)
@@ -20,7 +20,7 @@ class TeamsComponent : Component() {
 	val opponentTeam: MutableList<PlayerUnitUiData> = mutableListOf()
 }
 
-class PlayerCropUiData(val playerCrop: PlayerCrop, var amount: Int) {
+class PlayerCropUiData(val playerCrop: FieldCrop, var amount: Int) {
 	var hp: Int = playerCrop.hp
 	val hpMax: Int = playerCrop.crop.hp
 	var location: Int = toSimpleLocation(playerCrop.plotLocation)

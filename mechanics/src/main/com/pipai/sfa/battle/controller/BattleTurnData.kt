@@ -1,69 +1,68 @@
 package com.pipai.sfa.battle.controller
 
+import com.pipai.sfa.battle.domain.AmmoCrop
 import com.pipai.sfa.battle.domain.Battle
-import com.pipai.sfa.battle.domain.FieldCrop
-import com.pipai.sfa.battle.domain.PlayerUnit
+import com.pipai.sfa.battle.domain.Player
 
-data class FieldCrops(private val columns: Int) {
+data class AmmoCropColumns(private val columns: Int) {
 
-	private val cropsOnField1: List<MutableList<FieldCrop>>
-	private val cropsOnField2: List<MutableList<FieldCrop>>
+	private val ammoCrops1: List<MutableList<AmmoCrop>>
+	private val ammoCrops2: List<MutableList<AmmoCrop>>
 
 	init {
-		cropsOnField1 = generateFieldList(columns)
-		cropsOnField2 = generateFieldList(columns)
+		ammoCrops1 = generateFieldList(columns)
+		ammoCrops2 = generateFieldList(columns)
 	}
 
-	private fun generateFieldList(columns: Int): List<MutableList<FieldCrop>> {
-		val tempCropsOnField: MutableList<MutableList<FieldCrop>> = mutableListOf()
+	private fun generateFieldList(columns: Int): List<MutableList<AmmoCrop>> {
+		val tempCropsOnField: MutableList<MutableList<AmmoCrop>> = mutableListOf()
 		for (i in 0..columns) {
 			tempCropsOnField.add(mutableListOf())
 		}
 		return tempCropsOnField.toList()
 	}
 
-	fun getField1(): List<List<FieldCrop>> {
-		return cropsOnField1.map { it.toList() }
+	fun getAmmoForPlayer1(): List<List<AmmoCrop>> {
+		return ammoCrops1.map { it.toList() }
 	}
 
-	fun getField2(): List<List<FieldCrop>> {
-		return cropsOnField2.map { it.toList() }
+	fun getAmmoForPlayer2(): List<List<AmmoCrop>> {
+		return ammoCrops2.map { it.toList() }
 	}
 
-	fun getField1Column(column: Int): List<FieldCrop> {
-		return cropsOnField1.get(column).toList()
+	fun getAmmoColumnForPlayer1(column: Int): List<AmmoCrop> {
+		return ammoCrops1.get(column).toList()
 	}
 
-	fun getField2Column(column: Int): List<FieldCrop> {
-		return cropsOnField2.get(column).toList()
+	fun getAmmoColumnForPlayer2(column: Int): List<AmmoCrop> {
+		return ammoCrops2.get(column).toList()
 	}
 
-	fun addCropToField1(fieldCropInformation: FieldCrop, column: Int) {
-		addCropToField(fieldCropInformation, column, Field.FIELD_1)
+	fun addAmmoForPlayer1(ammoCrop: AmmoCrop, column: Int) {
+		addCropToField(ammoCrop, column, Player.PLAYER_1)
 	}
 
-	fun addCropToField2(fieldCropInformation: FieldCrop, column: Int) {
-		addCropToField(fieldCropInformation, column, Field.FIELD_2)
+	fun addAmmoForPlayer2(ammoCrop: AmmoCrop, column: Int) {
+		addCropToField(ammoCrop, column, Player.PLAYER_2)
 	}
 
-	private fun addCropToField(fieldCropInformation: FieldCrop, column: Int, field: Field) {
-		val fieldToAddTo = when (field) {
-			Field.FIELD_1 -> cropsOnField1
-			Field.FIELD_2 -> cropsOnField2
+	private fun addCropToField(ammoCrop: AmmoCrop, column: Int, player: Player) {
+		val sideToAddTo = when (player) {
+			Player.PLAYER_1-> ammoCrops1
+			Player.PLAYER_2 -> ammoCrops2
+			Player.NONE -> throw IllegalArgumentException("$player is not a valid argument")
 		}
 		if (column < 0) {
 			throw IllegalArgumentException("Column $column cannot be < 0")
 		}
-		if (column >= cropsOnField1.size) {
-			throw IllegalArgumentException("Column $column specified a column not within dimensions ${fieldToAddTo.size}")
+		if (column >= ammoCrops1.size) {
+			throw IllegalArgumentException("Column $column specified a column not within dimensions ${sideToAddTo.size}")
 		}
-		fieldToAddTo.get(column).add(fieldCropInformation)
+		sideToAddTo.get(column).add(ammoCrop)
 	}
-
-	private enum class Field { FIELD_1, FIELD_2 }
 
 }
 
-data class BattleTurnData(val battle: Battle, val fieldCrops: FieldCrops) {
-	constructor(battle: Battle) : this(battle, FieldCrops(battle.plotColumns))
+data class BattleTurnData(val battle: Battle, val ammoColumns: AmmoCropColumns) {
+	constructor(battle: Battle) : this(battle, AmmoCropColumns(battle.plotColumns))
 }

@@ -1,10 +1,10 @@
 package com.pipai.sfa.battle.command
 
 import com.pipai.sfa.battle.controller.BattleTurnData
-import com.pipai.sfa.battle.domain.FieldCrop
+import com.pipai.sfa.battle.domain.AmmoCrop
 import com.pipai.sfa.battle.domain.Player
-import com.pipai.sfa.battle.domain.PlayerCrop
-import com.pipai.sfa.battle.domain.PlayerUnit
+import com.pipai.sfa.battle.domain.FieldCrop
+import com.pipai.sfa.battle.domain.FieldUnit
 import com.pipai.sfa.battle.domain.PlotLocation
 import com.pipai.sfa.battle.eventlog.BattleEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.AddCropToColumnEvent
@@ -12,9 +12,9 @@ import com.pipai.sfa.battle.eventlog.BattleEvent.CropYieldChangeEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.TextEvent
 
 data class ShootCommand
-(val performingUnit: PlayerUnit,
+(val performingUnit: FieldUnit,
  val targetPlotLocation: PlotLocation,
- val cropToUse: PlayerCrop)
+ val cropToUse: FieldCrop)
 
 : BattleCommand {
 
@@ -57,11 +57,11 @@ data class ShootCommand
 					+ "${player.name}'s ${getDetailedName(performingUnit)}"
 					+ " used Shoot ${getDetailedName(cropToUse)} !"))
 
-			val fieldCropInformation = FieldCrop(cropToUse.crop, performingUnit, targetPlotLocation)
+			val fieldCropInformation = AmmoCrop(cropToUse.crop, performingUnit, targetPlotLocation)
 
 			when (playerEnum) {
-				Player.PLAYER_1 -> battleTurnData.fieldCrops.addCropToField1(fieldCropInformation, performingUnit.plotLocation.col)
-				Player.PLAYER_2 -> battleTurnData.fieldCrops.addCropToField2(fieldCropInformation, performingUnit.plotLocation.col)
+				Player.PLAYER_1 -> battleTurnData.ammoColumns.addAmmoForPlayer1(fieldCropInformation, performingUnit.plotLocation.col)
+				Player.PLAYER_2 -> battleTurnData.ammoColumns.addAmmoForPlayer2(fieldCropInformation, performingUnit.plotLocation.col)
 				Player.NONE -> throw IllegalStateException("Performing unit is not in either player's crew")
 			}
 

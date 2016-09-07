@@ -4,11 +4,11 @@ import com.pipai.sfa.battle.command.BattleCommand
 import com.pipai.sfa.battle.commandskill.BattleTurnEvaluationException
 import com.pipai.sfa.battle.domain.Battle
 import com.pipai.sfa.battle.domain.CropSize
-import com.pipai.sfa.battle.domain.FieldCrop
+import com.pipai.sfa.battle.domain.AmmoCrop
 import com.pipai.sfa.battle.domain.Player
-import com.pipai.sfa.battle.domain.PlayerCrop
+import com.pipai.sfa.battle.domain.FieldCrop
 import com.pipai.sfa.battle.domain.PlayerTeam
-import com.pipai.sfa.battle.domain.PlayerUnit
+import com.pipai.sfa.battle.domain.FieldUnit
 import com.pipai.sfa.battle.domain.PlotObject
 import com.pipai.sfa.battle.eventlog.BattleEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.BattleOutcomeEvent
@@ -16,7 +16,7 @@ import com.pipai.sfa.battle.eventlog.BattleEvent.CropTurnsUntilYieldChangeEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.CropYieldChangeEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.EndTurnEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.FarmDamageEvent
-import com.pipai.sfa.battle.eventlog.BattleEvent.FieldCropResolvedEvent
+import com.pipai.sfa.battle.eventlog.BattleEvent.AmmoCropResolvedEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.PlotObjectDamageEvent
 import org.slf4j.LoggerFactory
 import java.security.SecureRandom
@@ -89,11 +89,11 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 
 	private fun evaluateField(battleTurnData: BattleTurnData) {
 		LOGGER.info("Evaluating field:"
-				+ " field1: ${battleTurnData.fieldCrops.getField1()} field2: ${battleTurnData.fieldCrops.getField2()}")
+				+ " field1: ${battleTurnData.ammoColumns.getAmmoForPlayer1()} field2: ${battleTurnData.ammoColumns.getAmmoForPlayer2()}")
 
 		for (column in 0..battleTurnData.battle.plotColumns) {
-			val crops1 = battleTurnData.fieldCrops.getField1Column(column).toMutableList()
-			val crops2 = battleTurnData.fieldCrops.getField2Column(column).toMutableList()
+			val crops1 = battleTurnData.ammoColumns.getAmmoColumnForPlayer1(column).toMutableList()
+			val crops2 = battleTurnData.ammoColumns.getAmmoColumnForPlayer2(column).toMutableList()
 
 			while (crops1.isNotEmpty() || crops2.isNotEmpty()) {
 				val crop1 = crops1.getOrNull(0)
@@ -127,7 +127,7 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 		}
 	}
 
-	private fun evaluateCollision(fieldCrop1: FieldCrop, fieldCrop2: FieldCrop) {
+	private fun evaluateCollision(fieldCrop1: AmmoCrop, fieldCrop2: AmmoCrop) {
 		LOGGER.info("Evaluating collision of $fieldCrop1 and $fieldCrop2")
 		when (winnerOfCollision(fieldCrop1, fieldCrop2)) {
 			Player.PLAYER_1 -> {
@@ -140,13 +140,13 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 			}
 			Player.NONE -> {
 				LOGGER.info("Collision cancelled field crops out")
-				events.add(FieldCropResolvedEvent(fieldCrop1))
-				events.add(FieldCropResolvedEvent(fieldCrop2))
+				events.add(AmmoCropResolvedEvent(fieldCrop1))
+				events.add(AmmoCropResolvedEvent(fieldCrop2))
 			}
 		}
 	}
 
-	private fun winnerOfCollision(fieldCrop1: FieldCrop, fieldCrop2: FieldCrop): Player {
+	private fun winnerOfCollision(fieldCrop1: AmmoCrop, fieldCrop2: AmmoCrop): Player {
 		if (fieldCrop1.crop.size == CropSize.LARGE && fieldCrop2.crop.size == CropSize.SMALL) {
 			return Player.PLAYER_1
 		} else if (fieldCrop1.crop.size == CropSize.SMALL && fieldCrop2.crop.size == CropSize.LARGE) {
@@ -156,7 +156,7 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 		}
 	}
 
-	private fun evaluateDamage(fieldCrop: FieldCrop) {
+	private fun evaluateDamage(fieldCrop: AmmoCrop) {
 		LOGGER.info("Evaluating damage of $fieldCrop")
 		val player = battle.getPlayerForCrop(fieldCrop.crop)
 
@@ -173,7 +173,7 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 		}
 	}
 
-	private fun dealDamageToFarm(fieldCrop: FieldCrop, halveDamage: Boolean) {
+	private fun dealDamageToFarm(fieldCrop: AmmoCrop, halveDamage: Boolean) {
 		val player = battle.getPlayerForCrop(fieldCrop.crop)
 
 		// Get the farm of the opposing player of the crop
@@ -191,7 +191,7 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 		events.add(FarmDamageEvent(player, damage))
 	}
 
-	private fun dealDamageToPlotObject(plotObject: PlotObject, fieldCrop: FieldCrop) {
+	private fun dealDamageToPlotObject(plotObject: PlotObject, fieldCrop: AmmoCrop) {
 		val damage = calculateDamageToPlotObject(fieldCrop, plotObject)
 
 		LOGGER.info("Dealing damage to plot object ${plotObject.javaClass}: $damage")
@@ -199,10 +199,10 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 		events.add(PlotObjectDamageEvent(plotObject, damage))
 	}
 
-	private fun calculateDamageToPlotObject(fieldCrop: FieldCrop, plotObject: PlotObject): Int {
+	private fun calculateDamageToPlotObject(fieldCrop: AmmoCrop, plotObject: PlotObject): Int {
 		val def = when (plotObject) {
-			is PlayerUnit -> plotObject.unit.pdef
-			is PlayerCrop -> plotObject.crop.pdef
+			is FieldUnit -> plotObject.unit.pdef
+			is FieldCrop -> plotObject.crop.pdef
 			else -> 0
 		}
 		return clampToMin(fieldCrop.crop.patk + fieldCrop.shooter.unit.patk - def, 1)
@@ -221,7 +221,7 @@ class BattleTurnEvaluator(private val battle: Battle, private val random: Random
 		}
 	}
 
-	private fun decreaseTurnTimer(crop: PlayerCrop) {
+	private fun decreaseTurnTimer(crop: FieldCrop) {
 		crop.turnsUntilYield -= 1
 		events.add(CropTurnsUntilYieldChangeEvent(crop, -1))
 

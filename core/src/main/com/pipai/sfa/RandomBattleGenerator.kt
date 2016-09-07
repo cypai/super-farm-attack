@@ -1,11 +1,11 @@
 package com.pipai.sfa
 
 import com.pipai.sfa.battle.domain.Battle
-import com.pipai.sfa.battle.domain.Crop
+import com.pipai.sfa.battle.domain.PlayerCrop
 import com.pipai.sfa.battle.domain.Farm
 import com.pipai.sfa.battle.domain.PlayerTeamFactory
 import com.pipai.sfa.battle.domain.PlotLocation
-import com.pipai.sfa.battle.domain.Unit
+import com.pipai.sfa.battle.domain.PlayerUnit
 import com.pipai.sfa.index.CropSchemaIndex
 import com.pipai.sfa.index.UnitSchemaIndex
 import com.pipai.sfa.utils.RNG
@@ -46,8 +46,8 @@ fun generateStandardBattle(
 	return battle
 }
 
-private fun getRandomCropSelection(cropIndex: CropSchemaIndex, amount: Int): Map<Crop, PlotLocation> {
-	val cropMap: MutableMap<Crop, PlotLocation> = mutableMapOf()
+private fun getRandomCropSelection(cropIndex: CropSchemaIndex, amount: Int): Map<PlayerCrop, PlotLocation> {
+	val cropMap: MutableMap<PlayerCrop, PlotLocation> = mutableMapOf()
 	val randomLocations = shuffle(CROP_LOCATION_LIST)
 
 	for (i in 0..amount - 1) {
@@ -57,8 +57,8 @@ private fun getRandomCropSelection(cropIndex: CropSchemaIndex, amount: Int): Map
 	return cropMap
 }
 
-private fun getRandomUnitSelection(unitIndex: UnitSchemaIndex, amount: Int): Map<Unit, PlotLocation> {
-	val unitMap: MutableMap<Unit, PlotLocation> = mutableMapOf()
+private fun getRandomUnitSelection(unitIndex: UnitSchemaIndex, amount: Int): Map<PlayerUnit, PlotLocation> {
+	val unitMap: MutableMap<PlayerUnit, PlotLocation> = mutableMapOf()
 	val randomLocations = shuffle(CROP_LOCATION_LIST)
 
 	for (i in 0..amount - 1) {

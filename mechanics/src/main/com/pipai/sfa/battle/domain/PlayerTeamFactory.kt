@@ -4,11 +4,11 @@ class PlayerTeamFactory {
 	fun generatePlayerTeam(
 			name: String,
 			farm: Farm,
-			crew: Map<Unit, PlotLocation>,
-			crops: Map<Crop, PlotLocation>)
+			crew: Map<PlayerUnit, PlotLocation>,
+			crops: Map<PlayerCrop, PlotLocation>)
 			: PlayerTeam {
 
-		val cropYields: MutableMap<Crop, Int> = mutableMapOf()
+		val cropYields: MutableMap<PlayerCrop, Int> = mutableMapOf()
 
 		for (cropEntry in crops) {
 			cropYields.put(cropEntry.key, 1)

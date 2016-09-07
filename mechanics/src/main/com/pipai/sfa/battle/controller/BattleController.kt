@@ -3,7 +3,7 @@ package com.pipai.sfa.battle.controller
 import com.pipai.sfa.battle.command.BattleCommand
 import com.pipai.sfa.battle.domain.Battle
 import com.pipai.sfa.battle.domain.Player
-import com.pipai.sfa.battle.domain.PlayerCrop
+import com.pipai.sfa.battle.domain.FieldCrop
 import com.pipai.sfa.battle.domain.PlayerTeam
 import com.pipai.sfa.battle.eventlog.BattleEvent
 import com.pipai.sfa.battle.eventlog.BattleEvent.CropTurnsUntilYieldChangeEvent
