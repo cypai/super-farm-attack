@@ -12,6 +12,8 @@ class PlayerComponent : Component() {
 }
 
 class FieldUnitUiData(val fieldUnit: FieldUnit) {
+	val name: String = fieldUnit.unit.schema.name
+	val nickname: String = fieldUnit.unit.nickname
 	var hp: Int = fieldUnit.hp
 	val hpMax: Int = fieldUnit.unit.hp
 	var location: Int = toSimpleLocation(fieldUnit.plotLocation)
