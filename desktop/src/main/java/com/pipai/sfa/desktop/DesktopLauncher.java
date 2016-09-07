@@ -14,6 +14,7 @@ public final class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1024;
 		config.height = 768;
+		config.resizable = false;
 		new LwjglApplication(new SfaGame(), config);
 	}
 }
