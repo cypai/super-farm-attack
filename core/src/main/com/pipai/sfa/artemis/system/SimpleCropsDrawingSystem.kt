@@ -32,7 +32,7 @@ class SimpleCropsDrawingSystem(val batch: BatchHelper) : IteratingSystem(allOf()
 
 private fun generateCropString(cropData: FieldCropUiData): String {
 	return """
-			${cropData.amount} ${cropData.nickname} ${cropData.hp}/${cropData.hpMax} Yield Time: ${cropData.turnsUntilYield}
+			${cropData.amount} ${cropData.nickname} ${cropData.hp}/${cropData.hpMax} Next Yield: ${cropData.turnsUntilYield} Location: ${cropData.location}
 			  ${cropData.size} PAtk: ${cropData.patk} PDef: ${cropData.pdef}
 			""".trimIndent()
 }

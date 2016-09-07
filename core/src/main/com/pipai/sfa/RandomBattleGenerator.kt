@@ -12,7 +12,9 @@ import com.pipai.sfa.utils.RNG
 import com.pipai.sfa.utils.shuffle
 
 private val UNIT_LOCATION_LIST: List<PlotLocation> = listOf(
-		PlotLocation(0, 0), PlotLocation(1, 0), PlotLocation(2, 0))
+		PlotLocation(0, 0), PlotLocation(1, 0), PlotLocation(2, 0),
+		PlotLocation(0, 1), PlotLocation(1, 1), PlotLocation(2, 1),
+		PlotLocation(0, 2), PlotLocation(1, 2), PlotLocation(2, 2))
 
 private val CROP_LOCATION_LIST: List<PlotLocation> = listOf(
 		PlotLocation(0, 1), PlotLocation(1, 1), PlotLocation(2, 1),
@@ -59,7 +61,7 @@ private fun getRandomCropSelection(cropIndex: CropSchemaIndex, amount: Int): Map
 
 private fun getRandomUnitSelection(unitIndex: UnitSchemaIndex, amount: Int): Map<PlayerUnit, PlotLocation> {
 	val unitMap: MutableMap<PlayerUnit, PlotLocation> = mutableMapOf()
-	val randomLocations = shuffle(CROP_LOCATION_LIST)
+	val randomLocations = shuffle(UNIT_LOCATION_LIST)
 
 	for (i in 0..amount - 1) {
 		unitMap.put(unitIndex.allUnitSchemas.get(RNG.nextInt(unitIndex.size())).generateUnit(), randomLocations.get(i))

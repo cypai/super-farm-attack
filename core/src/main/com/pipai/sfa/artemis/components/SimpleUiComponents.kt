@@ -5,6 +5,8 @@ import com.pipai.sfa.battle.domain.CropSize
 import com.pipai.sfa.battle.domain.FieldCrop
 import com.pipai.sfa.battle.domain.FieldUnit
 import com.pipai.sfa.battle.domain.Player
+import com.pipai.sfa.battle.domain.PlayerFarm
+import com.pipai.sfa.battle.domain.PlayerTeam
 import com.pipai.sfa.utils.toSimpleLocation
 
 class PlayerComponent : Component() {
@@ -40,4 +42,38 @@ class FieldCropUiData(private val fieldCrop: FieldCrop, var amount: Int) {
 
 class CropsComponent : Component() {
 	val cropsData: MutableList<FieldCropUiData> = mutableListOf()
+}
+
+class FarmComponent : Component() {
+	lateinit var name: String
+	var hp = 0
+	var hpMax = 0
+
+	fun initByFarm(farm: PlayerFarm) {
+		name = farm.farm.name
+		hp = farm.hp
+		hpMax = farm.farm.hp
+	}
+}
+
+class FieldComponent : Component() {
+	val fieldCropLocations: MutableMap<Int, Boolean> = generateLocationMap()
+	val fieldUnitLocations: MutableMap<Int, Boolean> = generateLocationMap()
+
+	private fun generateLocationMap(): MutableMap<Int, Boolean> {
+		val locationMap: MutableMap<Int, Boolean> = mutableMapOf()
+		for (i in 1..9) {
+			locationMap.put(i, false)
+		}
+		return locationMap
+	}
+
+	fun initByPlayerTeam(team: PlayerTeam) {
+		for (fieldUnit in team.crew) {
+			fieldUnitLocations.put(toSimpleLocation(fieldUnit.plotLocation), true)
+		}
+		for (fieldCrop in team.crops) {
+			fieldCropLocations.put(toSimpleLocation(fieldCrop.plotLocation), true)
+		}
+	}
 }
