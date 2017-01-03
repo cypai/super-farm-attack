@@ -17,6 +17,8 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
+    apply plugin: 'checkstyle'
+
     version = '1.0'
     ext {
         appName = "sfa"
@@ -31,6 +33,9 @@ allprojects {
         
         mockitoVersion = '1.+'
         junitVersion = '4.12'
+
+        checkstyleVersion = '7.4'
+        sevntuChecksVersion = '1.23.0'
     }
 
     repositories {
@@ -38,6 +43,17 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "http://sevntu-checkstyle.github.com/sevntu.checkstyle/maven2" }
+    }
+
+    checkstyle {
+        configFile = file("${project.rootDir}/sfa_checkstyle.xml")
+        configProperties = [config_loc: project.rootDir]
+
+        dependencies {
+            checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
+            checkstyle "com.github.sevntu.checkstyle:sevntu-checks:${sevntuChecksVersion}"
+        }
     }
 }
 
