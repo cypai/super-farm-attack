@@ -74,7 +74,7 @@ class WorldGenerator(private val world: World, private val battle: Battle) {
 	fun generateFarmEntities() {
 		val playerFarmId = world.create()
 		mFarm.create(playerFarmId).initByFarm(battle.player1.farm)
-		mXy.create(playerFarmId).setXy(screenWidth / 20, screenHeight / 20)
+		mXy.create(playerFarmId).setXy(screenWidth / 20, screenHeight * 5 / 20)
 
 		val opponentFarmId = world.create()
 		mFarm.create(opponentFarmId).initByFarm(battle.player2.farm)

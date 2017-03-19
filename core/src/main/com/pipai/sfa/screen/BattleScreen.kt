@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.pipai.sfa.SfaGame
 import com.pipai.sfa.WorldGenerator
 import com.pipai.sfa.artemis.system.SimpleCropsDrawingSystem
+import com.pipai.sfa.artemis.system.SimpleFarmDrawingSystem
 import com.pipai.sfa.artemis.system.SimpleFieldDrawingSystem
 import com.pipai.sfa.artemis.system.SimpleTeamDrawingSystem
 import com.pipai.sfa.generateStandardBattle
@@ -29,6 +30,7 @@ class BattleScreen(game: SfaGame) : SwitchableScreen(game) {
 		val config: WorldConfiguration = WorldConfigurationBuilder()
 				.with(
 						SimpleFieldDrawingSystem(batch),
+						SimpleFarmDrawingSystem(batch),
 						SimpleTeamDrawingSystem(batch),
 						SimpleCropsDrawingSystem(batch)
 				).build()
